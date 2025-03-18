@@ -1,0 +1,1 @@
+id;dniTitular;numPoliza;importe;[datos específicos];tipoSeguro
