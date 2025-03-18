@@ -1,6 +1,6 @@
 package model
 
-class Usuario(val nombre: String, var clave: String, val perfil: String) : IExportable {
+class Usuario(public val nombre: String, var clave: String, public val perfil: String) : IExportable {
 //    TODO("el nombre de usuario debe ser unico en (SERVICE)")
 
     companion object {
@@ -9,8 +9,8 @@ class Usuario(val nombre: String, var clave: String, val perfil: String) : IExpo
         }
     }
 
-    override fun serializar(): String {
-        return listOf(nombre, clave, perfil).joinToString(";")
+    override fun serializar(separador: String): String {
+        return listOf(nombre, clave, perfil).joinToString(separador)
     }
 
     fun verificarClave(claveEncriptada: String): Boolean {
