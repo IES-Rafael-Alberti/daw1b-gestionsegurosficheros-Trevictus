@@ -33,7 +33,14 @@ abstract class Seguro(val numPoliza: Int, val dniTitular: String, private val im
     }
 
     override fun equals(other: Any?): Boolean {
-        return super.equals(other)
+        if(this === other){
+            return true
+        }
+        if(other !is Seguro){
+            return false
+        }
+
+        return this.numPoliza == other.numPoliza
     }
 
     override fun hashCode(): Int {

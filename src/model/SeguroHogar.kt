@@ -1,6 +1,12 @@
 package model
 
-class SeguroHogar(numPoliza: Int = generarId("SeguroHogar"), dniTitular: String, importe: Double, val metroCuadrados: Int, val valorContenido: Double, val direccion: String): Seguro(numPoliza, dniTitular, importe) {
+class SeguroHogar: Seguro {
+
+    private constructor(dniTitular: String, importe: Double, metrosCuadrados: Int, valorContenido: Double, direccion: String, anioConstruccion: Int): super(
+        generarId("SeguroHogar"), dniTitular, importe){
+
+
+    }
 
 
 
