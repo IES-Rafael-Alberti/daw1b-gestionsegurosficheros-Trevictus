@@ -1,6 +1,6 @@
 package model
 
-abstract class Seguro(val numPoliza: Int, val dniTitular: String, private val importe: Double) {
+abstract class Seguro(val numPoliza: Int, val dniTitular: String, private val importe: Double): IExportable {
 
 
     companion object {
@@ -24,6 +24,23 @@ abstract class Seguro(val numPoliza: Int, val dniTitular: String, private val im
 
     abstract fun tipoSeguro(): String
 
-    abstract fun serializar(): String//convierte el objeto a formato txt
+    fun comprobarNumPoliza(numPoliza: Int): Boolean{
+        return numPoliza == this.numPoliza
+    }
 
+    override fun serializar(): String {
+        return listOf(numPoliza, dniTitular, importe).joinToString(";")
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other)
+    }
+
+    override fun hashCode(): Int {
+        return numPoliza.hashCode()
+    }
+
+    override fun toString(): String {
+        return "Seguro(numPoliza=$numPoliza, dniTitular=$dniTitular, importe=${"%.2f".format(importe)})"
+    }
 }
