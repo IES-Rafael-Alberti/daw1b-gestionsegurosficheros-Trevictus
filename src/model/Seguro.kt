@@ -1,4 +1,4 @@
-package models
+package model
 
 abstract class Seguro(val numPoliza: Int, val dniTitular: String, private val importe: Double) {
 

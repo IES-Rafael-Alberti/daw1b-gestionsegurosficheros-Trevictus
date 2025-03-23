@@ -1,4 +1,4 @@
-package models
+package model
 
 class SeguroHogar(numPoliza: Int = generarId("SeguroHogar"), dniTitular: String, importe: Double, val metroCuadrados: Int, val valorContenido: Double, val direccion: String): Seguro(numPoliza, dniTitular, importe) {
 
