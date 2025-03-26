@@ -16,6 +16,8 @@ Cuando tenga otro rato, terminaré mi versión y os subiré el resto de apartado
 
 ***NOTA (24/03/2025 10:15)*** - Actualizados los apartados 4 y 5 (service y ui).
 
+***NOTA (25/03/2025 12:15)*** - Actualizados los apartados 7 y 8 (app y Main).
+
 ---
 
 Aquí tenéis un desglose del proyecto con **indicaciones detalladas** sobre qué debe hacer cada paquete y cómo implementar cada clase.
@@ -796,12 +798,102 @@ class Seguridad : IUtilSeguridad {
 
 ### **7. `app` (Flujo de la aplicación)**
 
+#### **ControlAcceso**
 
+***Es la clase responsable del control de acceso al sistema:***
+- Verificación de la existencia de algún usuario en el fichero `Usuarios.txt`.
+- Solicitud de creación de un usuario con perfil `ADMIN` si no existen usuarios.
+- Inicio de sesión *(petición de nombre y clave para llamar al método ' iniciarSesion()` del gestor de usuarios y hacer login)*.
+
+Los atributos de esta clase *(constructor primario)* serían los siguientes:
+- rutaArchivoUsuarios.
+- Interfaz de usuario *(IEntradaSalida)*
+- Servicio que gestiona los usuarios *(IServUsuarios)*
+- Clase que agrupa los métodos para gestionar ficheros *(IUtilFicheros)*
+
+#### **GestorMenu**
+
+Los atributos de esta clase *(constructor primario)* serían los siguientes:
+- Nombre del usuario
+- Perfil del usuario
+- Interfaz de usuario *(IEntradaSalida)*
+- Servicio que gestiona los usuarios *(IServUsuarios)*
+- Servicio que gestiona los seguros *(IServSeguros)*
+
+Entre sus métodos, ***debería tener uno para mostrar y gestionar los menús de la aplicación**.
+
+Además, un método por cada una de las opciones del menú, por ejemplo:
+- `nuevoUsuario()`
+- `eliminarUsuario`
+- `cambiarClaveUsuario()`
+- `consultarUsuarios()`
+- `contratarSeguro()`
+- `eliminarSeguro()`
+  ...
+
+#### **Menús y Permisos**
+
+Los usuarios verán opciones según su perfil.
+
+📌 Menú de admin
+```
+1. Usuarios
+    1. Nuevo
+    2. Eliminar
+    3. Cambiar contraseña
+    4. Consultar
+    5. Volver
+2. Seguros
+    1. Contratar
+        1. Hogar
+        2. Auto
+        3. Vida
+        4. Volver
+    2. Eliminar
+    3. Consultar
+        1. Todos
+        2. Hogar
+        3. Auto
+        4. Vida
+        5. Volver
+3. Salir
+```
+
+📌 Menú de gestión (Accede a todos los seguros pero no puede gestionar usuarios)
+```
+1. Seguros
+    1. Contratar
+        1. Hogar
+        2. Auto
+        3. Vida
+        4. Volver
+    2. Eliminar
+    3. Consultar
+        1. Todos
+        2. Hogar
+        3. Auto
+        4. Vida
+        5. Volver
+2. Salir
+```
+
+📌 Menú de consulta (Accede solo a la consulta de seguros)
+```
+1. Seguros
+    1. Consultar
+        1. Todos
+        2. Hogar
+        3. Auto
+        4. Vida
+        5. Volver
+2. Salir
+```
 
 ---
 
 ### **8. `Main.kt` (Punto de Entrada)**
 - Inicializa repositorios y servicios.
+- Pregunta si desea iniciar en modo SIMULACIÓN o ALMACENAMIENTO.
 - Pide credenciales o permite crear un `ADMIN` si no hay usuarios.
 - Carga el **menú principal** para gestionar usuarios y seguros.
 
