@@ -1,6 +1,6 @@
 package model
 
-abstract class Seguro(public val numPoliza: Int, private val dniTitular: String, protected val importe: Double): IExportable {
+abstract class Seguro(public var numPoliza: Int, private val dniTitular: String, protected val importe: Double): IExportable {
 
 
 //    companion object {
@@ -48,6 +48,6 @@ abstract class Seguro(public val numPoliza: Int, private val dniTitular: String,
     }
 
     override fun toString(): String {
-        return "Seguro(numPoliza=$numPoliza, dniTitular=$dniTitular, importe=${"%.2f".format(importe)})"
+        return "${this::class.simpleName}(numPoliza=$numPoliza, dniTitular=$dniTitular, importe=${"%.2f".format(importe)}"
     }
 }

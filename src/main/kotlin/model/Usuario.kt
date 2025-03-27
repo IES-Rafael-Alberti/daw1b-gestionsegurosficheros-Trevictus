@@ -1,12 +1,26 @@
 package model
 
-class Usuario(public val nombre: String, var clave: String, public val perfil: String) : IExportable {
+class Usuario(public val nombre: String, private var clave: String, public val perfil: String) : IExportable {
 //    TODO("el nombre de usuario debe ser unico en (SERVICE)")
 
     companion object {
-        fun crearUsuario(datos: List<String>): Usuario {
-            TODO("implementar")
+        fun crearSeguro(datos: List<String>): Usuario? {
+            try {
+                val nombre: String = datos[0]
+                val clave: String = datos[1]
+                val perfil: String = datos[2]
+
+                return Usuario(
+                    nombre,
+                    clave,
+                    perfil
+                )
+            } catch (e: NumberFormatException) {
+                println("ERROR. No se pudo crear el usuario -> $e")
+            }
+            return null
         }
+
     }
 
     override fun serializar(separador: String): String {
