@@ -88,9 +88,9 @@ class SeguroHogar : Seguro {
 
     }
 
-    override fun tipoSeguro(): String {
-        return this::class.simpleName ?: ("Desconocido")
-    }
+//    override fun tipoSeguro(): String {
+//        return this::class.simpleName ?: ("Desconocido")
+//    }
 
     override fun serializar(separador: String): String {
         return super.serializar(separador) + listOf(

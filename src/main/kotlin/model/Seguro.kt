@@ -22,11 +22,13 @@ abstract class Seguro(public var numPoliza: Int, private val dniTitular: String,
 
     abstract fun calcularImporteAnioSiguiente(interes: Double): Double
 
-    abstract fun tipoSeguro(): String
-
-    fun comprobarNumPoliza(numPoliza: Int): Boolean{
-        return numPoliza == this.numPoliza
+    fun tipoSeguro(): String {
+        return this::class.simpleName ?: "Desconocido"
     }
+
+//    fun comprobarNumPoliza(numPoliza: Int): Boolean{
+//        return numPoliza == this.numPoliza
+//    }
 
     override fun serializar(separador: String): String {
         return listOf(numPoliza, dniTitular, importe).joinToString(separador)
