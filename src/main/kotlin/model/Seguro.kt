@@ -1,6 +1,6 @@
 package model
 
-abstract class Seguro(public var numPoliza: Int, private val dniTitular: String, protected val importe: Double): IExportable {
+abstract class Seguro(var numPoliza: Int, private val dniTitular: String, protected val importe: Double): IExportable {
 
 
 //    companion object {

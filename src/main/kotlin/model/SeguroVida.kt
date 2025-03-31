@@ -8,7 +8,7 @@ class SeguroVida : Seguro {
 
     private val fechaNac: LocalDate
     private val nivelRiesgo: Enum<Riesgo>
-    private val indemnizacion: Boolean
+    private val indemnizacion: Double
 
 
     companion object {
@@ -29,7 +29,7 @@ class SeguroVida : Seguro {
                 val importe: Double = datos[2].toDouble()
                 val fechaNac: LocalDate = LocalDate.parse(datos[3], fechaFormato)
                 val nivelRiesgo: Enum<Riesgo> = Riesgo.valueOf(datos[4])
-                val indemnizacion: Boolean = datos[5].toBoolean()
+                val indemnizacion: Double = datos[5].toDouble()
 
                 return SeguroVida(
                     numPoliza,
@@ -53,7 +53,7 @@ class SeguroVida : Seguro {
         importe: Double,
         fechaNac: LocalDate,
         nivelRiesgo: Enum<Riesgo>,
-        indemnizacion: Boolean
+        indemnizacion: Double
     ) : super(setNumPolizasVida(), dniTitular, importe) {
         this.fechaNac = fechaNac
         this.nivelRiesgo = nivelRiesgo
@@ -66,7 +66,7 @@ class SeguroVida : Seguro {
         importe: Double,
         fechaNac: LocalDate,
         nivelRiesgo: Enum<Riesgo>,
-        indemnizacion: Boolean
+        indemnizacion: Double
     ) : super(numPoliza, dniTitular, importe) {
         this.fechaNac = fechaNac
         this.nivelRiesgo = nivelRiesgo
