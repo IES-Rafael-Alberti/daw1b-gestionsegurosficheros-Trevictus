@@ -4,7 +4,10 @@ import model.Perfil
 import model.Usuario
 
 open class RepoUsuariosMem : IRepoUsuarios {
-    private val listaUsuarios: MutableList<Usuario> = mutableListOf()
+
+
+    val listaUsuarios: MutableList<Usuario> = mutableListOf()
+
 
     override fun agregar(usuario: Usuario): Boolean {
         if (buscar(usuario.nombre) != null) {
@@ -31,13 +34,13 @@ open class RepoUsuariosMem : IRepoUsuarios {
     }
 
     override fun eliminar(nombreUsuario: String): Boolean {
-        if (buscar(nombreUsuario) != null) {
-            eliminar(nombreUsuario)
+        val usuarioNombre = buscar(nombreUsuario)
+        if (usuarioNombre != null) {
+            eliminar(usuarioNombre)
             return true
-        } else {
-            println("ERROR. No se encontró el nombre de usuario.")
-            return false
         }
+        return false
+
     }
 
     override fun obtenerTodos(): List<Usuario> {
