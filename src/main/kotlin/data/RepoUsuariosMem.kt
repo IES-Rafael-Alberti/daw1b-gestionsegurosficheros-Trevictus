@@ -3,7 +3,7 @@ package data
 import model.Perfil
 import model.Usuario
 
-class RepoUsuariosMem : IRepoUsuarios {
+open class RepoUsuariosMem : IRepoUsuarios {
     private val listaUsuarios: MutableList<Usuario> = mutableListOf()
 
     override fun agregar(usuario: Usuario): Boolean {
@@ -49,7 +49,11 @@ class RepoUsuariosMem : IRepoUsuarios {
     }
 
     override fun cambiarClave(usuario: Usuario, nuevaClave: String): Boolean {
-//        TODO: aaaaaaaaaaaaahhghghg
-        
+        if (buscar(usuario.nombre) != null) {
+            usuario.cambiarClave(nuevaClave)
+            return true
+        } else {
+            return false
+        }
     }
 }
