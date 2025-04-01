@@ -5,7 +5,7 @@ import model.Perfil
 import model.Usuario
 import utils.IUtilSeguridad
 
-class GestorUsuarios(val repoUsuarios: IRepoUsuarios, val seguridad: IUtilSeguridad) : IServUsuarios{
+class GestorUsuarios(val repoUsuarios: IRepoUsuarios, val seguridad: IUtilSeguridad) : IServUsuarios {
     override fun iniciarSesion(nombre: String, clave: String): Perfil? {
         val usuario = buscarUsuario(nombre)
 

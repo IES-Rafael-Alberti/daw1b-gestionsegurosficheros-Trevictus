@@ -4,7 +4,7 @@ import data.IRepoSeguros
 import model.*
 import java.time.LocalDate
 
-class GestorSeguros(val repoSeguros: IRepoSeguros): IServSeguros {
+class GestorSeguros(val repoSeguros: IRepoSeguros) : IServSeguros {
     override fun contratarSeguroHogar(
         dniTitular: String,
         importe: Double,
@@ -13,7 +13,16 @@ class GestorSeguros(val repoSeguros: IRepoSeguros): IServSeguros {
         direccion: String,
         anioConstruccion: Int
     ): Boolean {
-        return repoSeguros.agregar(SeguroHogar(dniTitular, importe, metrosCuadrados, valorContenido, direccion, anioConstruccion))
+        return repoSeguros.agregar(
+            SeguroHogar(
+                dniTitular,
+                importe,
+                metrosCuadrados,
+                valorContenido,
+                direccion,
+                anioConstruccion
+            )
+        )
     }
 
     override fun contratarSeguroAuto(
@@ -26,7 +35,18 @@ class GestorSeguros(val repoSeguros: IRepoSeguros): IServSeguros {
         asistenciaCarretera: Boolean,
         numPartes: Int
     ): Boolean {
-        return repoSeguros.agregar(SeguroAuto(dniTitular, importe, descripcion, combustible, tipoAuto, cobertura, asistenciaCarretera, numPartes))
+        return repoSeguros.agregar(
+            SeguroAuto(
+                dniTitular,
+                importe,
+                descripcion,
+                combustible,
+                tipoAuto,
+                cobertura,
+                asistenciaCarretera,
+                numPartes
+            )
+        )
     }
 
     override fun contratarSeguroVida(
@@ -40,14 +60,16 @@ class GestorSeguros(val repoSeguros: IRepoSeguros): IServSeguros {
     }
 
     override fun eliminarSeguro(numPoliza: Int): Boolean {
-        TODO("Not yet implemented")
+        return repoSeguros.eliminar(numPoliza)
     }
 
     override fun consultarTodos(): List<Seguro> {
-        TODO("Not yet implemented")
+        return repoSeguros.obtenerTodos()
     }
 
     override fun consultarPorTipo(tipoSeguro: String): List<Seguro> {
-        TODO("Not yet implemented")
+        return repoSeguros.obtener(tipoSeguro)
     }
+
+
 }
