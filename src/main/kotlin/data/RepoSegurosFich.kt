@@ -10,7 +10,7 @@ class RepoSegurosFich(val rutaArchivo: String, val fichero: Ficheros) : RepoSegu
 
 //    val ruta = "src/main/kotlin/utils/ficheroSeguros.txt"
 
-    override fun cargarSeguros(mapa: Map<String, (List<String>) -> Seguro>): Boolean {
+    override fun cargarSeguros(mapa: Map<String, (List<String>) -> Seguro?>): Boolean {
         val listaStrings = fichero.leerArchivo(rutaArchivo)
         for (elemento in listaStrings) {
             val numPoliza = elemento.split(";").first()
@@ -19,7 +19,7 @@ class RepoSegurosFich(val rutaArchivo: String, val fichero: Ficheros) : RepoSegu
 
                 if (funcion != null) {
                     val seguro = funcion(elemento.split(";"))
-                    if(super.agregar(seguro)){
+                    if(seguro?.let { super.agregar(it) } == true){
                         actualizarContadores(super.listaSeguros)
                         return true
                     }
@@ -32,7 +32,7 @@ class RepoSegurosFich(val rutaArchivo: String, val fichero: Ficheros) : RepoSegu
 
                 if (funcion != null) {
                     val seguro = funcion(elemento.split(";"))
-                    if(super.agregar(seguro)){
+                    if(seguro?.let { super.agregar(it) } == true){
                         actualizarContadores(super.listaSeguros)
                         return true
                     }
@@ -45,7 +45,7 @@ class RepoSegurosFich(val rutaArchivo: String, val fichero: Ficheros) : RepoSegu
 
                 if (funcion != null) {
                     val seguro = funcion(elemento.split(";"))
-                    if(super.agregar(seguro)){
+                    if(seguro?.let { super.agregar(it) } == true){
                         actualizarContadores(super.listaSeguros)
                         return true
                     }

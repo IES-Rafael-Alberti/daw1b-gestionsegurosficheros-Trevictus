@@ -24,7 +24,7 @@ class CargadorInicial(
      * Carga los usuarios desde el archivo configurado en el repositorio.
      * Muestra errores si ocurre un problema en la lectura o conversión de datos.
      */
-    fun cargarUsuarios() {
+    private fun cargarUsuarios() {
         try {
             repoUsuarios.cargarUsuarios()
             ui.mostrar("Usuarios cargados correctamente.")
@@ -45,7 +45,14 @@ class CargadorInicial(
      */
     fun cargarSeguros() {
         try{
-            repoSeguros.cargarSeguros()
+            repoSeguros.cargarSeguros(ConfiguracionesApp.mapaCrearSeguros)
+            ui.mostrar("Seguros cargados correctamente.")
+        }catch (e: InvalidFormatException) {
+            ui.mostrarError("ERROR. Datos mal formateados. ${e.message}")
+        }catch (e: IOException){
+            ui.mostrarError("ERROR. No se pudo leer el fichero. ${e.message}")
+        }catch(e: Exception){
+            ui.mostrarError("ERROR INESPERADO. ${e.message}")
         }
     }
 

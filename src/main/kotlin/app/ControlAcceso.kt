@@ -1,3 +1,5 @@
+import model.Perfil
+import model.Usuario
 import service.IServUsuarios
 import ui.IEntradaSalida
 import utils.IUtilFicheros
@@ -21,22 +23,30 @@ import utils.IUtilFicheros
  * @property ui Interfaz para mostrar mensajes y recoger entradas del usuario.
  * @property ficheros Utilidad para operar con ficheros (leer, comprobar existencia...).
  */
-class ControlAcceso(val rutaArchivo: String, val entradaSalida: IEntradaSalida, val gestorUsuarios: IServUsuarios, val ficheros: IUtilFicheros)
-{
+class ControlAcceso(
+    val rutaArchivo: String,
+    val entradaSalida: IEntradaSalida,
+    val gestorUsuarios: IServUsuarios,
+    val ficheros: IUtilFicheros
+) {
 
     /**
      * Inicia el proceso de autenticación del sistema.
      *
-     * Primero verifica si hay usuarios registrados. Si el archivo está vacío o no existe,
-     * ofrece al usuario la posibilidad de crear un usuario ADMIN inicial.
+     * Primero verifica si hay usuarios registrados. Si el archivo está vacío o no existe, ofrece al usuario la posibilidad de crear un usuario ADMIN inicial.
      *
      * A continuación, solicita credenciales de acceso en un bucle hasta que sean válidas
      * o el usuario decida cancelar el proceso.
      *
      * @return Un par (nombreUsuario, perfil) si el acceso fue exitoso, o `null` si el usuario cancela el acceso.
      */
-    fun autenticar() {
-        TODO("Implementar este método")
+    fun autenticar(): Pair<String, Perfil>? {
+        if (ficheros.existeFichero(rutaArchivo)) {
+            iniciarSesion()
+        } else {
+            verificarFicheroUsuarios()
+        }
+        return null
     }
 
     /**
@@ -48,11 +58,16 @@ class ControlAcceso(val rutaArchivo: String, val entradaSalida: IEntradaSalida, 
      * Este método se asegura de que siempre haya al menos un usuario en el sistema.
      *
      * @return `true` si el proceso puede continuar (hay al menos un usuario),
-     *         `false` si el usuario cancela la creación inicial o ocurre un error.
+     *         `false` si el usuario cancela la creación inicial u ocurre un error.
      */
     private fun verificarFicheroUsuarios() {
-        TODO("Implementar este método")
-    }
+        println("Crear usuario ADMIN.")
+        println("Introduce el nombre: ")
+        val nombre = readln()
+        println("Introduce clave de seguridad: ")
+        val clave = readln()
+        val usuarioAdmin = Usuario(nombre, clave, Perfil.ADMIN)
+        return Pair(nombre, Perfil.ADMIN)    }
 
     /**
      * Solicita al usuario sus credenciales (usuario y contraseña) en un bucle hasta
@@ -63,8 +78,25 @@ class ControlAcceso(val rutaArchivo: String, val entradaSalida: IEntradaSalida, 
      * @return Un par (nombreUsuario, perfil) si las credenciales son correctas,
      *         o `null` si el usuario decide no continuar.
      */
-    private fun iniciarSesion() {
-        TODO("Implementar este método")
+    private fun iniciarSesion(): Pair<String, Perfil>? {
+        while (true) {
+            println("Introduce credenciales o escribe 'cancelar' para salir.")
+            println("Introduce el nombre: ")
+            val nombre = readln()
+            println("Introduce clave de seguridad: ")
+            val clave = readln()
+            if (nombre.lowercase() == "cancelar" || clave.lowercase() == "cancelar") {
+                break
+            }
+            val listaStrings = ficheros.leerArchivo(rutaArchivo)
+            for (datosUsuario in listaStrings) {
+                val datos = datosUsuario.split(";")
+                if (datos[0] == nombre && datos[1] == clave) {
+                    return Pair(nombre, Perfil.getPerfil(datos[2]))
+                }
+            }
+        }
+        return null
     }
 
 }
