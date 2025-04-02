@@ -1,11 +1,10 @@
 package utils
 
 import model.IExportable
-import model.Seguro
 import ui.IEntradaSalida
 import java.io.File
 
-class Ficheros(val entradaSalida: IEntradaSalida) : IUtilFicheros {
+class Ficheros(private val entradaSalida: IEntradaSalida) : IUtilFicheros {
     override fun leerArchivo(ruta: String): List<String> {
         val cadenaArchivo = File(ruta).readLines()
         if (!existeFichero(ruta)) {
