@@ -3,8 +3,11 @@ import java.time.LocalDate
 
 
 fun main(){
-    val consola = Consola()
+    val lista = mutableListOf(1,2,3,4,5,6,7,8)
+    val lista2 = lista.remove(1)
 
-    println(consola.preguntar("pregunta"))
+    println(lista)
+    println(lista2)
+
 
 }

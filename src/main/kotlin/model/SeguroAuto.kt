@@ -12,7 +12,7 @@ class SeguroAuto : Seguro {
 
     companion object {
         const val PORCENTAJE_INCREMENTO_PARTES = 2
-        private var numPolizasAuto = 400000
+        var numPolizasAuto = 400000
 
         private fun setNumPolizasAuto(): Int {
             return numPolizasAuto++

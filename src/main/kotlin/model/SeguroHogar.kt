@@ -12,7 +12,7 @@ class SeguroHogar : Seguro {
     companion object {
         const val PORCENTAJE_INCREMENTO_ANIOS = 0.02
         const val CICLO_ANIOS_INCREMENTO = 5
-        private var numPolizasHogar = 100000
+        var numPolizasHogar = 100000
 
         private fun setNumPolizasHogar(): Int {
             return numPolizasHogar++

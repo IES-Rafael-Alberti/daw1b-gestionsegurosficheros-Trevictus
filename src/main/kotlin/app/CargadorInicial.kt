@@ -1,8 +1,10 @@
 package app
 
+import com.sun.media.sound.InvalidFormatException
 import data.ICargarSegurosIniciales
 import data.ICargarUsuariosIniciales
 import ui.IEntradaSalida
+import java.io.IOException
 
 /**
  * Clase encargada de cargar los datos iniciales de usuarios y seguros desde ficheros,
@@ -23,8 +25,16 @@ class CargadorInicial(
      * Muestra errores si ocurre un problema en la lectura o conversión de datos.
      */
     fun cargarUsuarios() {
-        TODO("Implementar este método")
-
+        try {
+            repoUsuarios.cargarUsuarios()
+            ui.mostrar("Usuarios cargados correctamente.")
+        }catch (e: InvalidFormatException) {
+            ui.mostrarError("ERROR. Datos mal formateados. ${e.message}")
+        }catch (e: IOException){
+            ui.mostrarError("ERROR. No se pudo leer el fichero. ${e.message}")
+        }catch(e: Exception){
+            ui.mostrarError("ERROR INESPERADO. ${e.message}")
+        }
     }
 
     /**
@@ -34,7 +44,9 @@ class CargadorInicial(
      * Muestra errores si ocurre un problema en la lectura o conversión de datos.
      */
     fun cargarSeguros() {
-        TODO("Implementar este método")
+        try{
+            repoSeguros.cargarSeguros()
+        }
     }
 
 }

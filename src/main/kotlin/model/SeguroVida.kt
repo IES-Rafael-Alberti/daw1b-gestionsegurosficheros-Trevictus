@@ -13,7 +13,7 @@ class SeguroVida : Seguro {
 
     companion object {
         const val PORCENTAJE_INCREMENTO_ANIO = 0.05
-        private var numPolizasVida = 800000
+        var numPolizasVida = 800000
 
         private fun setNumPolizasVida(): Int {
             return numPolizasVida++
