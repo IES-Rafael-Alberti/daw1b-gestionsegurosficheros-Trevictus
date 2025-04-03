@@ -1,9 +1,13 @@
 import app.ConfiguracionesApp
+import model.Auto
+import model.Cobertura
 import model.Perfil
-import service.GestorUsuarios
+import model.Riesgo
 import service.IServSeguros
 import service.IServUsuarios
 import ui.IEntradaSalida
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**
  * Clase encargada de gestionar el flujo de menús y opciones de la aplicación,
@@ -15,8 +19,13 @@ import ui.IEntradaSalida
  * @property gestorUsuarios Servicio de operaciones sobre usuarios.
  * @property gestorSeguros Servicio de operaciones sobre seguros.
  */
-class GestorMenu(val nombreUsuario: String, val perfilUsuario: String, val ui: IEntradaSalida, val gestorUsuarios: IServUsuarios, val gestorSeguros: IServSeguros)
-{
+class GestorMenu(
+    val nombreUsuario: String,
+    val perfilUsuario: Perfil,
+    val ui: IEntradaSalida,
+    val gestorUsuarios: IServUsuarios,
+    val gestorSeguros: IServSeguros
+) {
 
     /**
      * Inicia un menú según el índice correspondiente al perfil actual.
@@ -24,7 +33,7 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: String, val ui: I
      * @param indice Índice del menú que se desea mostrar (0 = principal).
      */
     fun iniciarMenu(indice: Int = 0) {
-        val (opciones, acciones) = ConfiguracionesApp.obtenerMenuYAcciones(perfilUsuario, indice)
+        val (opciones, acciones) = ConfiguracionesApp.obtenerMenuYAcciones(perfilUsuario.name.lowercase(), indice)
         ejecutarMenu(opciones, acciones)
     }
 
@@ -62,8 +71,7 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: String, val ui: I
                 val accion = ejecutar[opcion]
                 // Si la accion ejecutada del menú retorna true, debe salir del menú
                 if (accion != null && accion(this)) return
-            }
-            else {
+            } else {
                 ui.mostrarError("Opción no válida!")
             }
         } while (true)
@@ -71,25 +79,54 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: String, val ui: I
 
     /** Crea un nuevo usuario solicitando los datos necesarios al usuario */
     fun nuevoUsuario() {
-        val nombreUsuario = ui.pedirInfo("Introduce el nombre de usuario: ")
-        val clave = ui.pedirInfo("Introduce la clave de usuario: ")
+        if (ui.preguntar("¿Desea añadir un nuevo usuario? (s/n):  ")) {
+            try {
+                val nombre = ui.pedirInfo("Introduce nombre de usuario: ")
+                val clave = ui.pedirInfoOculta("Introduce contraseña: ")
+                val perfil = ui.pedirInfo("Introduce perfil: ")
+                gestorUsuarios.agregarUsuario(nombre, clave, Perfil.getPerfil(perfil))
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError(e.message.toString())
+            }
+        }
     }
 
     /** Elimina un usuario si existe */
     fun eliminarUsuario() {
-        TODO("Implementar este método")
+        if (ui.preguntar("¿Desea eliminar un usuario existente? s/n >> ")) {
+            try {
+                if (!gestorUsuarios.eliminarUsuario(ui.pedirInfo("Introduzca el nombre del usuario a eliminar >> "))) {
+                    throw IllegalArgumentException("Usuario no encontrado.")
+                } else {
+                    ui.mostrar("Usuario eliminado con éxito.")
+                }
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError(e.message.toString())
+            }
+        }
     }
 
     /** Cambia la contraseña del usuario actual */
     fun cambiarClaveUsuario() {
-        TODO("Implementar este método")
+        val usuario = gestorUsuarios.buscarUsuario(ui.pedirInfo("Introduzca el nombre del usuario >> "))
+        if (usuario != null) {
+            val pwd = ui.pedirInfo("Introduzca la nueva contraseña para el usuario ${usuario.nombre} >> ")
+            gestorUsuarios.cambiarClave(usuario, pwd)
+        } else {
+            ui.mostrarError("Usuario no encontrado.")
+        }
     }
 
     /**
      * Mostrar la lista de usuarios (Todos o filstrados por un perfil)
      */
     fun consultarUsuarios() {
-        TODO("Implementar este método")
+        if (ui.preguntar("¿Desea consultar la lista de usuarios? s/n >> ")) {
+            for (usuario in gestorUsuarios.consultarTodos()) {
+                ui.mostrar(usuario.toString(), true)
+            }
+            ui.pausar()
+        }
     }
 
     /**
@@ -97,8 +134,15 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: String, val ui: I
      *
      * @return El DNI introducido en mayúsculas.
      */
-    private fun pedirDni() {
-        TODO("Implementar este método")
+    private fun pedirDni(): String {
+        var dni: String = ""
+
+        try {
+            dni = ui.pedirInfo("Introduzca DNI > ", "DNI incorrecto") { input -> Regex("^[0-9]{8}[A-Z]$").matches(input) }
+        } catch (e: IllegalArgumentException) {
+            ui.mostrarError(e.message.toString())
+        }
+        return dni.uppercase()
     }
 
     /**
@@ -106,48 +150,129 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: String, val ui: I
      *
      * @return El valor introducido como `Double` si es válido.
      */
-    private fun pedirImporte() {
-        TODO("Implementar este método")
+    private fun pedirImporte(): Double {
+        var importe: Double? = null
+
+        while (importe == null) {
+            try {
+                importe = ui.pedirDouble("Introduce el importe > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError(e.message.toString())
+            }
+        }
+        return importe
     }
 
     /** Crea un nuevo seguro de hogar solicitando los datos al usuario */
     fun contratarSeguroHogar() {
-        TODO("Implementar este método")
+        try {
+            val dni = pedirDni()
+            val importe = pedirImporte()
+            val metrosCuadrados = ui.pedirEntero("Introduce los metros cuadrados > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            val valorContenido = ui.pedirDouble("Introduce el valor del contenido > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            val direccion = ui.pedirInfo("Introduce la dirección > ")
+            val anioConstruccion = ui.pedirEntero("Introduce el año de construcción > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            gestorSeguros.contratarSeguroHogar(dni, importe, metrosCuadrados, valorContenido, direccion, anioConstruccion)
+        } catch (e: IllegalArgumentException) {
+            ui.mostrarError("Error en los datos.")
+        }
     }
 
     /** Crea un nuevo seguro de auto solicitando los datos al usuario */
     fun contratarSeguroAuto() {
-        TODO("Implementar este método")
+        try {
+            val dni = pedirDni()
+            val importe = pedirImporte()
+            val descripcion = ui.pedirInfo("Introduce la descripción > ")
+            val combustible = ui.pedirEntero("Introduce el combustible > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            val tipoAuto = ui.pedirInfo("Introduce el tipo de vehículo > ")
+            val tipoCobertura = ui.pedirInfo("Introduce el tipo de cobertura > ")
+            val asistencia = ui.preguntar("¿Requiere de asistencia en carretera? s/n >")
+            val numPartes = ui.pedirEntero("Introduce el número de partes > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            gestorSeguros.contratarSeguroAuto(dni, importe, descripcion,
+                combustible.toString(), Auto.getAuto(tipoAuto), Cobertura.getCobertura(tipoCobertura), asistencia, numPartes)
+        } catch (e: IllegalArgumentException) {
+            ui.mostrarError("Error en los datos.")
+        }
     }
 
     /** Crea un nuevo seguro de vida solicitando los datos al usuario */
     fun contratarSeguroVida() {
-        TODO("Implementar este método")
+        try {
+            val dni = pedirDni()
+            val importe = pedirImporte()
+            val fecha = ui.pedirInfo("Introduce la fecha > ")
+            val nivelRiesgo = ui.pedirInfo("Introduce el nivel de riesgo > ")
+            val indemnizacion = ui.pedirDouble("Introduce la indemnizació > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            gestorSeguros.contratarSeguroVida(dni, importe, LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy")), Riesgo.getRiesgo(nivelRiesgo), indemnizacion)
+        } catch (e: IllegalArgumentException) {
+            ui.mostrarError("Error en los datos.")
+        }
     }
 
     /** Elimina un seguro si existe por su número de póliza */
     fun eliminarSeguro() {
-        TODO("Implementar este método")
+        if (!ui.preguntar("¿Desea borrar un seguro? (s/n) > ")) {
+            return
+        }
+        try {
+            val numpol = ui.pedirEntero("Introduce el número de póliza > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            gestorSeguros.eliminarSeguro(numpol)
+        } catch (e: IllegalArgumentException) {
+            ui.mostrarError("No existe ningún seguro por ese número de póliza.")
+        }
     }
 
     /** Muestra todos los seguros existentes */
     fun consultarSeguros() {
-        TODO("Implementar este método")
+        val lista = gestorSeguros.consultarTodos()
+        if (lista.isEmpty()) {
+            ui.mostrarError("No hay seguros existentes", pausa = true)
+        } else {
+            for (elemento in lista) {
+                ui.mostrar(elemento.toString())
+            }
+            ui.pausar()
+        }
     }
 
     /** Muestra todos los seguros de tipo hogar */
     fun consultarSegurosHogar() {
-        TODO("Implementar este método")
+        val lista = gestorSeguros.consultarPorTipo("SeguroHogar")
+        if (lista.isEmpty()) {
+            ui.mostrarError("No hay seguros de hogar existentes.", pausa = true)
+        } else {
+            for (elemento in lista) {
+                ui.mostrar(elemento.toString())
+            }
+            ui.pausar()
+        }
     }
 
     /** Muestra todos los seguros de tipo auto */
     fun consultarSegurosAuto() {
-        TODO("Implementar este método")
+        val lista = gestorSeguros.consultarPorTipo("SeguroAuto")
+        if (lista.isEmpty()) {
+            ui.mostrarError("No hay seguros de auto existentes.", pausa = true)
+        } else {
+            for (elemento in lista) {
+                ui.mostrar(elemento.toString())
+            }
+            ui.pausar()
+        }
     }
 
     /** Muestra todos los seguros de tipo vida */
     fun consultarSegurosVida() {
-        TODO("Implementar este método")
+        val lista = gestorSeguros.consultarPorTipo("SeguroVida")
+        if (lista.isEmpty()) {
+            ui.mostrarError("No hay seguros de vida existentes.", pausa = true)
+        } else {
+            for (elemento in lista) {
+                ui.mostrar(elemento.toString())
+            }
+            ui.pausar()
+        }
     }
 
 }

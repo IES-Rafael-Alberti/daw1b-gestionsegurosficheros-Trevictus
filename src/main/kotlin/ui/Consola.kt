@@ -15,8 +15,7 @@ class Consola : IEntradaSalida {
             print(msj)
         }
         if (pausa) {
-            println("Pulsa Enter para continuar...")
-            readln()
+            pausar()
         }
     }
 
@@ -28,8 +27,7 @@ class Consola : IEntradaSalida {
             println(error + msj)
         }
         if (pausa) {
-            println("Pulsa Enter para continuar...")
-            readln()
+            pausar()
         }
     }
 

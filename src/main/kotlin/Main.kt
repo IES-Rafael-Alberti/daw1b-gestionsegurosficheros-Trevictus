@@ -39,6 +39,6 @@ fun main(){
     val login = ControlAcceso(archivoTxtUsuarios, ui, gestorUsuarios, gestorFicheros).autenticar()
 
     if(login != null){
-        GestorMenu(login.first, login.second.toString(), ui, gestorUsuarios, gestorSeguros).iniciarMenu()
+        GestorMenu(login.first, login.second, ui, gestorUsuarios, gestorSeguros).iniciarMenu()
     }
 }

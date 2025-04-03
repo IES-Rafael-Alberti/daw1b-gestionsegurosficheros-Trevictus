@@ -30,7 +30,7 @@ class CargadorInicial(
             ui.mostrar("Usuarios cargados correctamente.")
 
         }catch (e: IOException){
-            ui.mostrarError("ERROR. No se pudo leer el fichero. ${e.message}")
+            ui.mostrarError("No se pudo leer el fichero. ${e.message}")
         }catch(e: Exception){
             ui.mostrarError("ERROR INESPERADO. ${e.message}")
         }

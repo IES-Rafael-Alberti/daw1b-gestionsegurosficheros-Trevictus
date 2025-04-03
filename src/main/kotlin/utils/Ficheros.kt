@@ -6,19 +6,18 @@ import java.io.File
 
 class Ficheros(private val entradaSalida: IEntradaSalida) : IUtilFicheros {
     override fun leerArchivo(ruta: String): List<String> {
-        val cadenaArchivo = File(ruta).readLines()
         if (!existeFichero(ruta)) {
-            entradaSalida.mostrarError("No se pudo leer el archivo.")
-            return emptyList()
+            return mutableListOf()
         }
-        return cadenaArchivo
+        val rutaArchivo = File(ruta)
+        return rutaArchivo.readLines()
     }
 
     override fun agregarLinea(ruta: String, linea: String): Boolean {
         try {
             val archivo = File(ruta)
             if (!existeFichero(ruta)) {
-                archivo.writeText(linea + "\n")
+                archivo.appendText(linea + "\n")
             } else {
                 archivo.appendText(linea + "\n")
             }
