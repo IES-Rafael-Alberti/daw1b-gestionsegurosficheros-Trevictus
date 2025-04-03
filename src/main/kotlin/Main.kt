@@ -1,13 +1,44 @@
+import app.CargadorInicial
+import data.*
+import service.GestorSeguros
+import service.GestorUsuarios
 import ui.Consola
+import utils.Ficheros
+import utils.Seguridad
 import java.time.LocalDate
 
 
 fun main(){
-    val lista = mutableListOf(1,2,3,4,5,6,7,8)
-    val lista2 = lista.remove(1)
+    val archivoTxtUsuarios = "src/main/kotlin/data/res/Usuarios.txt"
+    val archivoTxtSeguros = "src/main/kotlin/data/res/Seguros.txt"
 
-    println(lista)
-    println(lista2)
+    val ui = Consola()
+    val gestorFicheros = Ficheros(ui)
+    val moduloSeguridad = Seguridad()
 
+    ui.limpiarPantalla()
 
+    val simulacion = ui.preguntar("¿Desea iniciar en modo simulación? (s/n): ")
+
+    val repoUsuarios: IRepoUsuarios
+    val repoSeguros: IRepoSeguros
+
+    if(simulacion){
+        repoUsuarios = RepoUsuariosMem()
+        repoSeguros = RepoSegurosMem()
+    }else{
+        repoUsuarios = RepoUsuariosFich(archivoTxtUsuarios, gestorFicheros)
+        repoSeguros = RepoSegurosFich(archivoTxtSeguros, gestorFicheros)
+        CargadorInicial(ui, repoSeguros, repoUsuarios).cargarSeguros()
+        CargadorInicial(ui,repoSeguros, repoUsuarios).cargarUsuarios()
+    }
+
+    val gestorSeguros = GestorSeguros(repoSeguros)
+    val gestorUsuarios = GestorUsuarios(repoUsuarios, moduloSeguridad)
+
+    val login = ControlAcceso(archivoTxtUsuarios, ui, gestorUsuarios, gestorFicheros).autenticar()
+
+    if(login != null){
+        GestorMenu(login.first, login.second.toString(), ui, gestorUsuarios, gestorSeguros).iniciarMenu()
+    }
 }

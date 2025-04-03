@@ -8,7 +8,7 @@ class Ficheros(private val entradaSalida: IEntradaSalida) : IUtilFicheros {
     override fun leerArchivo(ruta: String): List<String> {
         val cadenaArchivo = File(ruta).readLines()
         if (!existeFichero(ruta)) {
-            entradaSalida.mostrarError("ERROR. No se pudo leer el archivo.")
+            entradaSalida.mostrarError("No se pudo leer el archivo.")
             return emptyList()
         }
         return cadenaArchivo
@@ -24,7 +24,7 @@ class Ficheros(private val entradaSalida: IEntradaSalida) : IUtilFicheros {
             }
             return true
         } catch (e: Exception) {
-            println("ERROR. Problemas al escribir en/el archivo. ${e.message}")
+            entradaSalida.mostrarError("Problemas al escribir en/el archivo. ${e.message}")
             return false
         }
     }
