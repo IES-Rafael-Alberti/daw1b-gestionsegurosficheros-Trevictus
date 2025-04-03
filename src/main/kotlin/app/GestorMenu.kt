@@ -71,7 +71,8 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: String, val ui: I
 
     /** Crea un nuevo usuario solicitando los datos necesarios al usuario */
     fun nuevoUsuario() {
-        TODO("Implementar este método")
+        val nombreUsuario = ui.pedirInfo("Introduce el nombre de usuario: ")
+        val clave = ui.pedirInfo("Introduce la clave de usuario: ")
     }
 
     /** Elimina un usuario si existe */

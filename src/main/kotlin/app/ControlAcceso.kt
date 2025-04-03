@@ -24,10 +24,10 @@ import utils.IUtilFicheros
  * @property ficheros Utilidad para operar con ficheros (leer, comprobar existencia...).
  */
 class ControlAcceso(
-    val rutaArchivo: String,
-    val entradaSalida: IEntradaSalida,
-    val gestorUsuarios: IServUsuarios,
-    val ficheros: IUtilFicheros
+    private val rutaArchivo: String,
+    private val entradaSalida: IEntradaSalida,
+    private val gestorUsuarios: IServUsuarios,
+    private val ficheros: IUtilFicheros
 ) {
 
     /**
@@ -42,9 +42,26 @@ class ControlAcceso(
      */
     fun autenticar(): Pair<String, Perfil>? {
         if (ficheros.existeFichero(rutaArchivo)) {
-            iniciarSesion()
+            return iniciarSesion()
         } else {
-            verificarFicheroUsuarios()
+            if (verificarFicheroUsuarios()) {
+
+                val nombre = entradaSalida.pedirInfo("Introduce nombre de usuario ADMIN: ")
+                val clave = entradaSalida.pedirInfo("Introduzca su clave: ")
+                val usuario = Usuario(nombre, clave, Perfil.ADMIN)
+                val lista = listOf(usuario)
+
+                if (!gestorUsuarios.agregarUsuario(nombre, clave, Perfil.ADMIN)) {
+                    entradaSalida.mostrarError("Error al crear el usuario.")
+                    return null
+                }
+
+                if (!ficheros.escribirArchivo(rutaArchivo, lista)) {
+                    entradaSalida.mostrarError("Error al escribir el archivo.")
+                    return null
+                }
+                return Pair(nombre, Perfil.ADMIN)
+            }
         }
         return null
     }
@@ -60,14 +77,21 @@ class ControlAcceso(
      * @return `true` si el proceso puede continuar (hay al menos un usuario),
      *         `false` si el usuario cancela la creación inicial u ocurre un error.
      */
-    private fun verificarFicheroUsuarios() {
-        println("Crear usuario ADMIN.")
-        println("Introduce el nombre: ")
-        val nombre = readln()
-        println("Introduce clave de seguridad: ")
-        val clave = readln()
-        val usuarioAdmin = Usuario(nombre, clave, Perfil.ADMIN)
-        return Pair(nombre, Perfil.ADMIN)    }
+    private fun verificarFicheroUsuarios(): Boolean {
+
+        if (ficheros.leerArchivo(rutaArchivo).isEmpty()) {
+            entradaSalida.preguntar("No existen usuarios. ¿Desea crear un usuario ADMIN? (s/n)")
+            while (true) {
+                val opcion = readln().lowercase()
+                when (opcion) {
+                    "s" -> return true
+                    "n" -> return false
+                    else -> entradaSalida.mostrarError("Entrada incorrecta.")
+                }
+            }
+        }
+        return false
+    }
 
     /**
      * Solicita al usuario sus credenciales (usuario y contraseña) en un bucle hasta

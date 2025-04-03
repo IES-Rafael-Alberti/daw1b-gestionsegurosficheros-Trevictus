@@ -1412,7 +1412,7 @@ fun main() {
 
     // Crear dos variables con las rutas de los archivos de texto donde se almacenan los usuarios y seguros.
     // Estos ficheros se usarán solo si el programa se ejecuta en modo de almacenamiento persistente.
-   
+
 
     // Instanciamos los componentes base del sistema: la interfaz de usuario, el gestor de ficheros y el módulo de seguridad.
     // Estos objetos serán inyectados en los diferentes servicios y utilidades a lo largo del programa.
