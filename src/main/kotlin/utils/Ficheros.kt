@@ -29,7 +29,11 @@ class Ficheros(private val entradaSalida: IEntradaSalida) : IUtilFicheros {
     }
 
     override fun <T : IExportable> escribirArchivo(ruta: String, elementos: List<T>): Boolean {
-        File(ruta).writeText(elementos.joinToString("\n") { it.serializar() })
+        if (elementos.size == 1) {
+            File(ruta).writeText(elementos[0].serializar() + "\n")
+        } else {
+            File(ruta).writeText(elementos.joinToString("\n") { it.serializar() })
+        }
         return true
     }
 

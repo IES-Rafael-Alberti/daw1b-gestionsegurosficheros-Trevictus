@@ -1,1 +1,2 @@
-caca;caca;ADMINpepe;$2a$12$A24uD7r8B78iutAgTMuTn.sAP9.jYrRFoDJAottgobswCGop2jvhm;ADMIN
+caca;caca;ADMIN
+papa;$2a$12$s9CmDO5iP5jR34zJyybNAezCDIR/LWNMOO9a7901tYU7OlE1pgW4K;ADMIN

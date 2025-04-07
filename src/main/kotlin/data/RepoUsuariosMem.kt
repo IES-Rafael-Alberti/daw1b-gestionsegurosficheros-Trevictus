@@ -5,9 +5,9 @@ import model.Usuario
 
 open class RepoUsuariosMem : IRepoUsuarios {
 
-
+companion object {
     val listaUsuarios: MutableList<Usuario> = mutableListOf()
-
+}
 
     override fun agregar(usuario: Usuario): Boolean {
         if (buscar(usuario.nombre) != null) {
