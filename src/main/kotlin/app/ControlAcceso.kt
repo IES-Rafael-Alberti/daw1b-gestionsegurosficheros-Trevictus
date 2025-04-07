@@ -104,7 +104,7 @@ class ControlAcceso(
      */
     private fun iniciarSesion(): Pair<String, Perfil>? {
         while (true) {
-            println("Introduce credenciales o escribe 'cancelar' para salir.")
+            println("Introduce credenciales de ADMIN o escribe 'cancelar' para salir.")
             println("Introduce el nombre: ")
             val nombre = readln()
             println("Introduce clave de seguridad: ")
